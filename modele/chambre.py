@@ -53,7 +53,7 @@ class Reservation(Base):
 class Client(Base):
     __tablename__ = "client"
     #Champs de la table client
-    nom_: Mapped[str]
+    nom: Mapped[str]
     prenom: Mapped[str]
     adresse: Mapped[str]
     id_client: Mapped[str] = mapped_column(primary_key = True)
