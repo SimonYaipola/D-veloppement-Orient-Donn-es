@@ -10,7 +10,7 @@ logging.basicConfig()
 logging.getLogger("sqlalchemy.engine").setLevel (logging.INFO)
 
 
-
+#Params pour définir les paramètres de connection à la base de données.
 server = '158.69.208.232,1433'
 database = 'Hotels'
 username = 'sa'
@@ -30,13 +30,14 @@ with engine.connect() as connection:
 class TesTypeChambre(unittest.TestCase):
     def test_TypeChambre(self):
         with Session(engine) as session:
-
+            #Sélectionner un type de chambre spécifique à partir de la base de données en utilisant SQLAlchemy.
             stmt = select(Typechambre).where(Typechambre.nom_type ==  'triple')
 
             
-
+            #Exécuter la requête et récupérer le résultat sous forme d'objet Typechambre.
             type_chambre = session.execute(stmt).scalar_one()
 
+            #Vérifier que les attributs de l'objet Typechambre correspondent aux valeurs attendues.
             self.assertEqual(type_chambre.nom_type, 'triple')
 
             self.assertEqual(type_chambre.prix_plancher, 200.00)

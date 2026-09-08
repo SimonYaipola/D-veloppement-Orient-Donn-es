@@ -16,12 +16,7 @@ logging.getLogger("sqlalchemy.engine").setLevel (logging.INFO)
 #la chaîne de connection peut être différente.
 
 
-#La chaîne de connection ci-bas servait lorsque j'utilisais une version antérieure de SQL Server Express. #engine - create_engine("mssql+pyodbc://localhost\\sqlexpress01/Hotel?driver-SQL Server', use_setinputsizes=False) #Cette chaione de connection est utilisée pour SQL Server Express 17.
 
-
-#engine = create_engine(f"mssql+pyodbc://158.69.208.232\\SQLEXPRESS/Hotels?driver=ODBC+Drivers+17+for+SQL+Server" )
-
-#engine = create_engine("mssql+pyodbc://158.69.208.232\\SQLEXPRESS/Hotel?driver=ODBC+Driver+17+for+SQL+Server", use_setinputsizes=False)
 
 server = '158.69.208.232,1433'
 database = 'Hotels'
