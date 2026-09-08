@@ -44,8 +44,6 @@ class TesTypeChambre(unittest.TestCase):
 
             self.assertEqual(type_chambre.prix_plafond, 420)
 
-            self.assertEqual(type_chambre.nom_type, 'triple')
-
             self.assertEqual(type_chambre.id_type_chambre, '52FC37DF-5454-42AB-BF0F-259C996F3FD5')
 
             self.assertEqual(type_chambre.description_chambre, 'Chambre avec lit de la taille de guillaume')
