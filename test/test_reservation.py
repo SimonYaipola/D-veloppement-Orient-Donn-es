@@ -27,6 +27,7 @@ engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}")
 with engine.connect() as connection:
     print("Connection réussie")
 
+
     
 class test_reservation(unittest.TestCase):
     def test_getReservationParId(self):
