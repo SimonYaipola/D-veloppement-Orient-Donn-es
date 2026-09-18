@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
-from modele.chambre import Chambre, TypeChambre
+from modele.chambre import Chambre, Typechambre
 import urllib
 
 
@@ -34,8 +34,8 @@ def creerChambre(chambre: ChambreDTO):
     # ou si le numéro de chambre existe déjà, on Raise un ValueError.
     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
     with Session(engine) as session:
-        stmt = select(TypeChambre).where(
-            TypeChambre.nom_type == chambre.type_chambre.nom_type
+        stmt = select(Typechambre).where(
+            Typechambre.nom_type == chambre.type_chambre.nom_type
         )
         result = session.execute(stmt)
 
@@ -58,7 +58,7 @@ def creerTypeChambre(typeChambre: TypeChambreDTO):
     # TODO : Ajouter des validations au besoin.
     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
     with Session(engine) as session:
-        nouveauTypeChambre = TypeChambre(
+        nouveauTypeChambre = Typechambre(
             nom_type=typeChambre.nom_type,
             prix_plancher=typeChambre.prix_plancher
         )
@@ -94,7 +94,7 @@ def modifierChambre(chambre: ChambreDTO):
         chambreAModifier.disponible_reservation = chambre.disponible_reservation
         chambreAModifier.autre_informations = chambre.autre_informations
         chambreAModifier.numero_chambre = chambre.numero_chambre
-
-        # TODO: Setter les autres champs
+        chambreAModifier.fk_type_chambre = chambre.type_chambre.id_type_chambre
+        chambreAModifier.fk_reservation = chambre.fk_reservation
 
         session.commit()
