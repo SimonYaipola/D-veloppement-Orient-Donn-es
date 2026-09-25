@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, update
 from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
 from modele.chambre import Chambre, Typechambre
 import urllib
@@ -95,6 +95,14 @@ def modifierChambre(chambre: ChambreDTO):
         chambreAModifier.autre_informations = chambre.autre_informations
         chambreAModifier.numero_chambre = chambre.numero_chambre
         chambreAModifier.fk_type_chambre = chambre.type_chambre.id_type_chambre
-        chambreAModifier.fk_reservation = chambre.fk_reservation
 
+        session.execute(
+            update(Chambre).where(Chambre.id_chambre == chambre.idChambre).values(
+                disponible_reservation=chambre.disponible_reservation,
+                autre_informations=chambre.autre_informations,
+                numero_chambre=chambre.numero_chambre,
+                fk_type_chambre=chambre.type_chambre.id_type_chambre,
+            )
+        )
         session.commit()
+        return chambre
