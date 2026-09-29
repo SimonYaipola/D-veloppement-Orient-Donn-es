@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 from uuid import UUID
 
-from modele.chambre import Chambre, Typechambre
+from modele.table import Chambre, Typechambre
 from DTO.chambreDTO import TypechambreDTO
 from metier.chambreMetier import creerTypeChambre
 
