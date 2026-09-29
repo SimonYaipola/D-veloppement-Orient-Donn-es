@@ -1,3 +1,6 @@
+
+from uuid import uuid4
+
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 from DTO.chambreDTO import ChambreDTO, TypechambreDTO
@@ -54,12 +57,20 @@ def creerChambre(chambre: ChambreDTO):
 
 
 def creerTypeChambre(typeChambre: TypechambreDTO):
-    # TODO : Générer un uuid et l'assigner à la chambre, si vous n'utilisez pas un auto-increment.
-    # TODO : Ajouter des validations au besoin.
+    nom = typeChambre.nom_type.strip() if typeChambre.nom_type else ""
+
+    if not nom:
+        raise ValueError("Le nom du type de chambre ne peut pas être vide.")
+    if len(nom) > 50:
+        raise ValueError("Le nom du type de chambre ne peut pas dépasser 50 caractères.")
+    if typeChambre.prix_plancher is None or typeChambre.prix_plancher < 0:
+        raise ValueError("Le prix plancher doit être un nombre positif.")
+    
     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
     with Session(engine) as session:
         nouveauTypeChambre = Typechambre(
-            nom_type=typeChambre.nom_type,
+            id_type_chambre=str(uuid4()),
+            nom_type=nom,
             prix_plancher=typeChambre.prix_plancher
         )
 

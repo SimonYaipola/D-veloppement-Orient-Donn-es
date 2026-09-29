@@ -1,5 +1,5 @@
 import unittest
-from modele.chambre import Chambre, TypeChambre
+from modele.table import Chambre, TypeChambre
 from metier.chambreMetier import creerChambre, ChambreDTO
 
 

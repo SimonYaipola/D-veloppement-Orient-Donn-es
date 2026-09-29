@@ -1,7 +1,7 @@
 import urllib
 import unittest
 import modele 
-from modele.chambre import Client
+from modele.table import Client
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 

@@ -1,7 +1,7 @@
 import urllib
 import unittest
 import modele 
-from modele.chambre import Typechambre
+from modele.table import Typechambre
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 
