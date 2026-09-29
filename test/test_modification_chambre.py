@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 from sqlalchemy import text
 import urllib
-from modele.chambre import Chambre, Typechambre
+from modele.table import Chambre, Typechambre
 from metier.chambreMetier import modifierChambre, ChambreDTO
 
 server = '158.69.208.232,1433'
