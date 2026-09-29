@@ -10,7 +10,7 @@ class test_creerChambre(unittest.TestCase):
                 numero_chambre=501,
                 disponible_reservation=True,
                 type_chambre=
-                    TypeChambre(
+                    Typechambre(
                         nom_type='king',
                         prix_plancher=229.0
                     )

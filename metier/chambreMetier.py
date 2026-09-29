@@ -121,7 +121,15 @@ def modifierChambre(chambre: ChambreDTO):
         chambreAModifier.disponible_reservation = chambre.disponible_reservation
         chambreAModifier.autre_informations = chambre.autre_informations
         chambreAModifier.numero_chambre = chambre.numero_chambre
+        chambreAModifier.fk_type_chambre = chambre.type_chambre.id_type_chambre
 
-        # TODO: Setter les autres champs
-
+        session.execute(
+            update(Chambre).where(Chambre.id_chambre == chambre.idChambre).values(
+                disponible_reservation=chambre.disponible_reservation,
+                autre_informations=chambre.autre_informations,
+                numero_chambre=chambre.numero_chambre,
+                fk_type_chambre=chambre.type_chambre.id_type_chambre,
+            )
+        )
         session.commit()
+        return chambre
