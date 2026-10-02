@@ -1,7 +1,10 @@
+
+from uuid import uuid4
+
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
-from modele.chambre import Chambre, Typechambre
+from modele.table import Chambre, Typechambre
 import urllib
 import uuid
 
@@ -37,7 +40,7 @@ def creerChambre(chambre: ChambreDTO):
     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
     with Session(engine) as session:
         stmt = select(Typechambre).where(
-            Typechambre.nom_type == chambre.type_chambre.nom_type,
+            Typechambre.nom_type == chambre.type_chambre.nom_type
         )
         typeChambre = session.execute(stmt).scalars().first()
         
@@ -59,12 +62,20 @@ def creerChambre(chambre: ChambreDTO):
 
 
 def creerTypeChambre(typeChambre: TypeChambreDTO):
-    # TODO : Générer un uuid et l'assigner à la chambre, si vous n'utilisez pas un auto-increment.
-    # TODO : Ajouter des validations au besoin.
+    nom = typeChambre.nom_type.strip() if typeChambre.nom_type else ""
+
+    if not nom:
+        raise ValueError("Le nom du type de chambre ne peut pas être vide.")
+    if len(nom) > 50:
+        raise ValueError("Le nom du type de chambre ne peut pas dépasser 50 caractères.")
+    if typeChambre.prix_plancher is None or typeChambre.prix_plancher < 0:
+        raise ValueError("Le prix plancher doit être un nombre positif.")
+    
     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
     with Session(engine) as session:
         nouveauTypeChambre = Typechambre(
-            nom_type=typeChambre.nom_type,
+            id_type_chambre=str(uuid4()),
+            nom_type=nom,
             prix_plancher=typeChambre.prix_plancher
         )
 
@@ -76,7 +87,18 @@ def creerTypeChambre(typeChambre: TypeChambreDTO):
 
 def getChambreParNumero(no_chambre: int):
     # TODO : Ajouter des validations au besoin. Ex : no_chambre ne doit pas être null.
-    # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
+    
+    if no_chambre is None:
+        raise ValueError("Le numéro de chambre ne peut pas être null.")
+
+    if isinstance(no_chambre, bool) or not isinstance(no_chambre, int):
+        raise TypeError("Le numéro de chambre doit être un entier.")
+
+    if no_chambre <= 0:
+        raise ValueError("Le numéro de chambre doit être un entier positif.")
+
+     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
+
     with Session(engine) as session:
         stmt = select(Chambre).where(
             Chambre.numero_chambre == no_chambre
@@ -85,6 +107,11 @@ def getChambreParNumero(no_chambre: int):
 
         for chambre in result.scalars():
             return ChambreDTO(chambre)
+
+
+    
+    
+
 
 
 def modifierChambre(chambre: ChambreDTO):
@@ -99,7 +126,15 @@ def modifierChambre(chambre: ChambreDTO):
         chambreAModifier.disponible_reservation = chambre.disponible_reservation
         chambreAModifier.autre_informations = chambre.autre_informations
         chambreAModifier.numero_chambre = chambre.numero_chambre
+        chambreAModifier.fk_type_chambre = chambre.type_chambre.id_type_chambre
 
-        # TODO: Setter les autres champs
-
+        session.execute(
+            update(Chambre).where(Chambre.id_chambre == chambre.idChambre).values(
+                disponible_reservation=chambre.disponible_reservation,
+                autre_informations=chambre.autre_informations,
+                numero_chambre=chambre.numero_chambre,
+                fk_type_chambre=chambre.type_chambre.id_type_chambre,
+            )
+        )
         session.commit()
+        return chambre

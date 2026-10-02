@@ -2,8 +2,8 @@ import urllib
 import unittest
 import modele 
 from datetime import datetime
-from modele import chambre
-from modele.chambre import Reservation
+from modele import table
+from modele.table import Reservation
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 
@@ -32,7 +32,7 @@ with engine.connect() as connection:
 class test_reservation(unittest.TestCase):
     def test_getReservationParId(self):
         with Session(engine) as session:
-            stmt = select(chambre.Reservation).where(chambre.Reservation.id_reservation == '88B53AB2-E147-4626-8BB9-075EA6D810C8')
+            stmt = select(table.Reservation).where(table.Reservation.id_reservation == '88B53AB2-E147-4626-8BB9-075EA6D810C8')
             Reservation = session.execute(stmt).scalar_one()
             self.assertEqual(Reservation.id_reservation, '88B53AB2-E147-4626-8BB9-075EA6D810C8')
             datetime_fin_Base = '2026-09-15 00:00:00.000'
