@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from modele.chambre import Typechambre, Chambre
+from modele.table import Typechambre, Chambre
 from uuid import UUID
 from datetime import datetime
 
