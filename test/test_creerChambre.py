@@ -1,5 +1,5 @@
 import unittest
-from modele.table import Chambre, TypeChambre
+from modele.table import Chambre, Typechambre
 from metier.chambreMetier import creerChambre, ChambreDTO
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, delete
