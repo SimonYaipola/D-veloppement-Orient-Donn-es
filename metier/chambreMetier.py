@@ -1,8 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
-from modele.chambre import Chambre, TypeChambre
+from modele.chambre import Chambre, Typechambre
 import urllib
+import uuid
+
 
 
 # engine = create_engine(
@@ -29,23 +31,26 @@ engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}",
 
 
 def creerChambre(chambre: ChambreDTO):
-    # TODO : Générer un uuid et l'assigner à la chambre, si vous n'utilisez pas un auto-increment.
+    # TODO : Générer un uuid et l'assigner à la chambre, si vous n'utilisez pas un auto-increment.   #if null. raise value(ValueError)
     # TODO : Ajouter des validations au besoin. Ex : Lorsque l'on crée une chambre, s'il n'y a pas de numéro de chambre
     # ou si le numéro de chambre existe déjà, on Raise un ValueError.
     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
     with Session(engine) as session:
-        stmt = select(TypeChambre).where(
-            TypeChambre.nom_type == chambre.type_chambre.nom_type
+        stmt = select(Typechambre).where(
+            Typechambre.nom_type == chambre.type_chambre.nom_type,
         )
-        result = session.execute(stmt)
+        typeChambre = session.execute(stmt).scalars().first()
+        
+        if chambre.idChambre is None:
+            chambre.idChambre = uuid.uuid4()
 
-        for typeChambre in result.scalars():
-            nouvelleChambre = Chambre(
-                numero_chambre=chambre.numero_chambre,
-                disponible_reservation=chambre.disponible_reservation,
-                autre_informations=chambre.autre_informations,
-                type_chambre=typeChambre
-            )
+        nouvelleChambre = Chambre(
+            numero_chambre=chambre.numero_chambre,
+            disponible_reservation=chambre.disponible_reservation,
+            autre_informations=chambre.autre_informations,
+            id_chambre=str(chambre.idChambre).upper(),
+            fk_type_chambre=str(typeChambre.id_type_chambre).upper(),
+        )
 
         session.add(nouvelleChambre)
         session.commit()
@@ -58,7 +63,7 @@ def creerTypeChambre(typeChambre: TypeChambreDTO):
     # TODO : Ajouter des validations au besoin.
     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
     with Session(engine) as session:
-        nouveauTypeChambre = TypeChambre(
+        nouveauTypeChambre = Typechambre(
             nom_type=typeChambre.nom_type,
             prix_plancher=typeChambre.prix_plancher
         )
