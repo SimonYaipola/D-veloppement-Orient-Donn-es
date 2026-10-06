@@ -38,27 +38,30 @@ def creerChambre(chambre: ChambreDTO):
     # TODO : Ajouter des validations au besoin. Ex : Lorsque l'on crée une chambre, s'il n'y a pas de numéro de chambre
     # ou si le numéro de chambre existe déjà, on Raise un ValueError.
     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
-    with Session(engine) as session:
-        stmt = select(Typechambre).where(
-            Typechambre.nom_type == chambre.type_chambre.nom_type
-        )
-        typeChambre = session.execute(stmt).scalars().first()
+    try :
         
-        if chambre.idChambre is None:
-            chambre.idChambre = uuid.uuid4()
+        with Session(engine) as session:
+            stmt = select(Typechambre).where(
+                Typechambre.nom_type == chambre.type_chambre.nom_type
+            )
+            typeChambre = session.execute(stmt).scalars().first()
+            
+            if chambre.idChambre is None:
+                chambre.idChambre = uuid.uuid4()
 
-        nouvelleChambre = Chambre(
-            numero_chambre=chambre.numero_chambre,
-            disponible_reservation=chambre.disponible_reservation,
-            autre_informations=chambre.autre_informations,
-            id_chambre=str(chambre.idChambre).upper(),
-            fk_type_chambre=str(typeChambre.id_type_chambre).upper(),
-        )
+            nouvelleChambre = Chambre(
+                numero_chambre=chambre.numero_chambre,
+                disponible_reservation=chambre.disponible_reservation,
+                autre_informations=chambre.autre_informations,
+                id_chambre=str(chambre.idChambre).upper(),
+                fk_type_chambre=str(typeChambre.id_type_chambre).upper(),
+            )
+            session.add(nouvelleChambre)
 
-        session.add(nouvelleChambre)
-        session.commit()
+        
+            session.commit()    
 
-        return chambre
+            return chambre
 
 
 def creerTypeChambre(typeChambre: TypeChambreDTO):

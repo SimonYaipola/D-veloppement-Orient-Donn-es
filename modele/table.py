@@ -3,6 +3,7 @@
 from pyclbr import Class
 from typing import List
 from sqlalchemy import ForeignKey
+import sqlalchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, relationship, mapped_column
 
 class Base(DeclarativeBase):
@@ -33,21 +34,49 @@ class Typechambre(Base):
     # Relation de 1 à N qui sera automatiquement mappé sur SQLAlchemy grâce à la 'relationship()' de la classe Chambre
     chambre: Mapped[List["Chambre"]] = relationship(back_populates="type_chambre")
 # --- Fin code du prof ---
-# --- Code de GUG ---
+
 class Reservation(Base):
-    __tablename__ = "reservation"
-    date_fin_reservation: Mapped[str] 
-    date_debut_reservation: Mapped[str] 
-    prix_jour: Mapped[float]
-    info_reservation: Mapped[str]
-    id_reservation: Mapped[str] = mapped_column(primary_key = True)
-    # clées étrangères
-    fk_id_client: Mapped[str] = mapped_column(ForeignKey("client.id_client"))
-    fk_id_chambre: Mapped[str] = mapped_column(ForeignKey("chambre.id_chambre"))
-    # Relations 1 à 1
-    client: Mapped['Client'] = relationship()
-    chambre: Mapped['Chambre'] = relationship()
-    # --- Fin code de GUG ---
+    try :
+        __tablename__ = "reservation"
+        date_fin_reservation: Mapped[str] = mapped_column(nullable=False)
+        date_debut_reservation: Mapped[str] = mapped_column(nullable=False)
+        prix_jour: Mapped[float] = mapped_column(nullable=False)
+        info_reservation: Mapped[str] = mapped_column(nullable=False)
+        id_reservation: Mapped[str] = mapped_column(primary_key = True)
+        # clées étrangères
+        fk_id_client: Mapped[str] = mapped_column(ForeignKey("client.id_client"))
+        fk_id_chambre: Mapped[str] = mapped_column(ForeignKey("chambre.id_chambre"))
+        # Relations 1 à 1
+        client: Mapped['Client'] = relationship()
+        chambre: Mapped['Chambre'] = relationship()
+
+        if (len(client) > len("EC50134D-372B-4DFD-9627-02BE06BA6BD6")) :
+            raise NameError(f"Erreur dans la clé étrangère client")
+        
+        if (len(chambre) > len("EC50134D-372B-4DFD-9627-02BE06BA6BD6")) :
+            raise NameError(f"Erreur dans la clé étrangère chambre")
+
+        if isinstance(prix_jour, int) :
+            raise ValueError(f"prix jour n'est pas le bon type (INT)")
+
+        if (len(date_fin_reservation) > len("2026-09-15 00:00:00.000")) :
+            ValueError(f"Erreur de date de fin de la reservation")
+
+        if (len(date_debut_reservation) > len("2026-09-15 00:00:00.000")) :
+            ValueError(f"Erreur de date de debut de la reservation")
+
+        
+    except ValueError as ve :
+        print(f"Erreur de valeur: {ve}")
+    except NameError as ne :
+        print(f"Erreur de nom/string: {ne}")
+    except sqlalchemy.exc.DatabaseError as dbe :
+        print(f"Erreur d'opérations dans la DB: {dbe}")
+    except sqlalchemy.exc.StatementError as se :
+        print(f"Erreur de statement: {se}")
+    except Exception as e :
+        print(f"Autre exception: {e}")
+
 
 # ---  Code Simon ---
 class Client(Base):
