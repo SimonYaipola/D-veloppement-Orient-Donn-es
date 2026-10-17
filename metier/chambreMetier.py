@@ -2,7 +2,7 @@
 from uuid import uuid4
 
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, update
 from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
 from modele.table import Chambre, Typechambre
 import urllib
