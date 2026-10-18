@@ -1,35 +1,17 @@
 from typing import Optional
-from pydantic import BaseModel
-from modele.table import Typechambre, Chambre
 from uuid import UUID
-from datetime import datetime
+from pydantic import BaseModel, Field
+from modele.table import Chambre
+from DTO.typechambreDTO import TypeChambreDTO
 
-# Data Transfert Object : pydantic BaseModel pour intégration facile avec FastAPI.
-# Facilite aussi grandement la sérialization et la validation des données contenues dans les DTOs.
-
-class TypechambreDTO(BaseModel):
-    id_type_chambre: Optional[UUID] = None
-    nom_type: str
-    prix_plafond: Optional[float] = None
-    prix_plancher: float
-    description_chambre: Optional[str] = None
-
-    def __init__(self, typeChambre: Typechambre = None):
-        super().__init__(
-            id_type_chambre=typeChambre.id_type_chambre,
-            nom_type=typeChambre.nom_type,
-            prix_plafond=typeChambre.prix_plafond,
-            prix_plancher=typeChambre.prix_plancher,
-            description_chambre=typeChambre.description_chambre
-        )
 
 
 class ChambreDTO(BaseModel):
     idChambre: Optional[UUID] = None
-    numero_chambre: int
-    disponible_reservation: bool
+    numero_chambre: int = Field(gt=0, strict=True)
+    disponible_reservation: bool = Field(strict=True)
     autre_informations: Optional[str] = None
-    type_chambre: TypechambreDTO
+    type_chambre: TypeChambreDTO
 
     def __init__(self, chambre: Chambre = None):
         super().__init__(
@@ -37,5 +19,5 @@ class ChambreDTO(BaseModel):
             numero_chambre=chambre.numero_chambre,
             disponible_reservation=chambre.disponible_reservation,
             autre_informations=chambre.autre_informations,
-            type_chambre=TypechambreDTO(chambre.type_chambre)
+            type_chambre=TypeChambreDTO(chambre.type_chambre)
         )
