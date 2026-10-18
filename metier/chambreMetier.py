@@ -34,10 +34,15 @@ engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}",
 
 
 def creerChambre(chambre: ChambreDTO):
-    # TODO : Générer un uuid et l'assigner à la chambre, si vous n'utilisez pas un auto-increment.   #if null. raise value(ValueError)
-    # TODO : Ajouter des validations au besoin. Ex : Lorsque l'on crée une chambre, s'il n'y a pas de numéro de chambre
-    # ou si le numéro de chambre existe déjà, on Raise un ValueError.
-    # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
+    if chambre.numero_chambre or chambre.disponible_reservation or chambre.autre_informations is None:
+        raise ValueError ("Tout les champs doivent être remplis sauf id_chambre qui est facultatif.")
+    if type (chambre.numero_chambre) is not int or chambre.numero_chambre <= 0:
+        raise ValueError ("Le numéro de chambre dois être un entier positif.")
+    if type (chambre.disponible_reservation) is not bool:
+        raise TypeError ("La disponibilité de la réservation doit être un booléen.")
+    if type (chambre.autre_informations) is not str:
+        raise TypeError ("Les autres informations doivent être du texte.")
+
     with Session(engine) as session:
         stmt = select(Typechambre).where(
             Typechambre.nom_type == chambre.type_chambre.nom_type
@@ -46,13 +51,16 @@ def creerChambre(chambre: ChambreDTO):
         
         if chambre.idChambre is None:
             chambre.idChambre = uuid.uuid4()
+        else:
+            if type (chambre.idChambre) is not uuid:
+                raise ("L'identifiant de chambre n'est pas un uuid valide.")
 
         nouvelleChambre = Chambre(
             numero_chambre=chambre.numero_chambre,
             disponible_reservation=chambre.disponible_reservation,
             autre_informations=chambre.autre_informations,
-            id_chambre=str(chambre.idChambre).upper(),
-            fk_type_chambre=str(typeChambre.id_type_chambre).upper(),
+            id_chambre=str(chambre.idChambre),
+            fk_type_chambre=str(typeChambre.id_type_chambre),
         )
 
         session.add(nouvelleChambre)
