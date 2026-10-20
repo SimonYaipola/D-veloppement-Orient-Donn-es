@@ -3,10 +3,9 @@
 from pyclbr import Class
 from typing import List
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import DeclarativeBase, Mapped, relationship, mapped_column
-
-class Base(DeclarativeBase):
-    pass
+from sqlalchemy.orm import Mapped, relationship, mapped_column
+from modele.client import Client
+from modele.base import Base
 
 class Chambre(Base):
     __tablename__ = "chambre"
@@ -48,17 +47,3 @@ class Reservation(Base):
     client: Mapped['Client'] = relationship()
     chambre: Mapped['Chambre'] = relationship()
     # --- Fin code de GUG ---
-
-# ---  Code Simon ---
-class Client(Base):
-    __tablename__ = "client"
-    #Champs de la table client
-    nom: Mapped[str]
-    prenom: Mapped[str]
-    adresse: Mapped[str]
-    id_client: Mapped[str] = mapped_column(primary_key = True)
-    mot_de_passe: Mapped[str]
-    mobile: Mapped[str]
-    # Relations 1 à N
-    reservations: Mapped[List["Reservation"]] = relationship(back_populates="client")
-    #--- Fin code Simon ---
