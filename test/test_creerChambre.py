@@ -30,7 +30,7 @@ class test_creerChambre(unittest.TestCase):
                 numero_chambre=501,
                 disponible_reservation=True,
                 autre_informations='lavabo inclut',
-                id_chambre='1776E513-BB05-41D9-B22E-0073772A006A',
+                id_chambre='1776e513-bb05-41d9-b22e-0073772a006a',
                 type_chambre=
                     Typechambre(
                         nom_type='triple',
@@ -46,7 +46,7 @@ class test_creerChambre(unittest.TestCase):
         self.assertEqual(chambreDTOCree.numero_chambre, 501)
         self.assertEqual(chambreDTOCree.disponible_reservation, True)
         self.assertEqual(chambreDTOCree.autre_informations, 'lavabo inclut')
-        self.assertEqual(chambreDTOCree.idChambre, UUID('1776E513-BB05-41D9-B22E-0073772A006A'))
+        self.assertEqual(chambreDTOCree.idChambre, UUID('1776e513-bb05-41d9-b22e-0073772a006a'))
         self.assertEqual(chambreDTOCree.type_chambre.nom_type, 'triple')
         self.assertEqual(chambreDTOCree.type_chambre.prix_plancher, 210)
         self.assertEqual(chambreDTOCree.type_chambre.prix_plafond, 320)
@@ -54,7 +54,7 @@ class test_creerChambre(unittest.TestCase):
         
 
         with Session(engine) as session:
-            stmt = delete(Chambre).where(Chambre.id_chambre == '1776E513-BB05-41D9-B22E-0073772A006A')
+            stmt = delete(Chambre).where(Chambre.id_chambre == '1776e513-bb05-41d9-b22e-0073772a006a')
             session.execute(stmt)
             session.commit()
 

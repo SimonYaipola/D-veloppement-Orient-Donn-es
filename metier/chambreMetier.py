@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select, update
-from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
+from DTO.chambreDTO import ChambreDTO, TypechambreDTO
 from modele.table import Chambre, Typechambre
 import urllib
 import uuid
@@ -34,8 +34,8 @@ engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}",
 
 
 def creerChambre(chambre: ChambreDTO):
-    if chambre.numero_chambre or chambre.disponible_reservation or chambre.autre_informations is None:
-        raise ValueError ("Tout les champs doivent être remplis sauf id_chambre qui est facultatif.")
+    if chambre.numero_chambre is None or chambre.disponible_reservation is None or chambre.autre_informations is None or chambre.type_chambre is None or chambre.type_chambre.nom_type is None:
+        raise ValueError ("Tous les champs doivent être remplis sauf id_chambre qui est facultatif.")
     if type (chambre.numero_chambre) is not int or chambre.numero_chambre <= 0:
         raise ValueError ("Le numéro de chambre dois être un entier positif.")
     if type (chambre.disponible_reservation) is not bool:
@@ -51,16 +51,13 @@ def creerChambre(chambre: ChambreDTO):
         
         if chambre.idChambre is None:
             chambre.idChambre = uuid.uuid4()
-        else:
-            if type (chambre.idChambre) is not uuid:
-                raise ("L'identifiant de chambre n'est pas un uuid valide.")
 
         nouvelleChambre = Chambre(
             numero_chambre=chambre.numero_chambre,
             disponible_reservation=chambre.disponible_reservation,
             autre_informations=chambre.autre_informations,
-            id_chambre=str(chambre.idChambre),
-            fk_type_chambre=str(typeChambre.id_type_chambre),
+            id_chambre=str(chambre.idChambre).upper(),
+            fk_type_chambre=str(typeChambre.id_type_chambre).upper(),
         )
 
         session.add(nouvelleChambre)
@@ -69,7 +66,7 @@ def creerChambre(chambre: ChambreDTO):
         return chambre
 
 
-def creerTypeChambre(typeChambre: TypeChambreDTO):
+def creerTypeChambre(typeChambre: TypechambreDTO):
     nom = typeChambre.nom_type.strip() if typeChambre.nom_type else ""
 
     if not nom:
