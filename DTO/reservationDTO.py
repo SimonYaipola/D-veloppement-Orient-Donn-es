@@ -16,6 +16,8 @@ class ReservationDTO(BaseModel):
     client: clientDTO # À LIER AVEC CLIENTDTO !!!!!
     chambre: chambreDTO
 
+    numero_reservation: int
+
     def __init__(self, reservation: Reservation = None):
         super().__init__(
             date_fin_reservation=reservation.date_fin_reservation,
@@ -24,7 +26,8 @@ class ReservationDTO(BaseModel):
             info_reservation=reservation.info_reservation,
             id_reservation=reservation.id_reservation,
             client=clientDTO(reservation.client),
-            chambre=chambreDTO(reservation.chambre)
+            chambre=chambreDTO(reservation.chambre),
+            numero_reservation=reservation.numero_reservation
         )
 
     #Valider que le prix par jour est supérieur à 0 

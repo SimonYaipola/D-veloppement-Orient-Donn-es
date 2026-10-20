@@ -24,101 +24,88 @@ engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}",
 
 
 def creerReservation(reservation: ReservationDTO):
-    # TODO : Générer un uuid et l'assigner à la chambre, si vous n'utilisez pas un auto-increment.   #if null. raise value(ValueError)
-    # TODO : Ajouter des validations au besoin. Ex : Lorsque l'on crée une chambre, s'il n'y a pas de numéro de chambre
-    # ou si le numéro de chambre existe déjà, on Raise un ValueError.
-    # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
-    with Session(engine) as session:
-        stmt = select(Typechambre).where(
-            Typechambre.nom_type == chambre.type_chambre.nom_type
-        )
-        typeChambre = session.execute(stmt).scalars().first()
-        
-        if chambre.idChambre is None:
-            chambre.idChambre = uuid.uuid4()
-
-        nouvelleChambre = Chambre(
-            numero_chambre=chambre.numero_chambre,
-            disponible_reservation=chambre.disponible_reservation,
-            autre_informations=chambre.autre_informations,
-            id_chambre=str(chambre.idChambre).upper(),
-            fk_type_chambre=str(typeChambre.id_type_chambre).upper(),
-        )
-
-        session.add(nouvelleChambre)
-        session.commit()
-
-        return chambre
-
-
-def creerTypeChambre(typeChambre: TypeChambreDTO):
-    nom = typeChambre.nom_type.strip() if typeChambre.nom_type else ""
-
-    if not nom:
-        raise ValueError("Le nom du type de chambre ne peut pas être vide.")
-    if len(nom) > 50:
-        raise ValueError("Le nom du type de chambre ne peut pas dépasser 50 caractères.")
-    if typeChambre.prix_plancher is None or typeChambre.prix_plancher < 0:
-        raise ValueError("Le prix plancher doit être un nombre positif.")
-    
-    # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
-    with Session(engine) as session:
-        nouveauTypeChambre = Typechambre(
-            id_type_chambre=str(uuid4()),
-            nom_type=nom,
-            prix_plancher=typeChambre.prix_plancher
-        )
-
-        session.add(nouveauTypeChambre)
-        session.commit()
-
-        return typeChambre
-
-
-def getChambreParNumero(no_chambre: int):
-    # TODO : Ajouter des validations au besoin. Ex : no_chambre ne doit pas être null.
-    
-    if no_chambre is None:
-        raise ValueError("Le numéro de chambre ne peut pas être null.")
-
-    if isinstance(no_chambre, bool) or not isinstance(no_chambre, int):
-        raise TypeError("Le numéro de chambre doit être un entier.")
-
-    if no_chambre <= 0:
-        raise ValueError("Le numéro de chambre doit être un entier positif.")
-
-     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
-
     with Session(engine) as session:
         stmt = select(Chambre).where(
-            Chambre.numero_chambre == no_chambre
+            Chambre.id_chambre == reservation.id_chambre
+        )
+        chambre = session.execute(stmt).scalars().first()
+
+        stmt = select(Client).where(
+            Client.id_client == reservation.id_client
+        )
+        client = session.execute(stmt).scalars().first()
+
+        if reservation.id_Reservation is None:
+            reservation.id_Reservation = uuid.uuid4()
+
+        nouvelleReservation = Reservation(
+            date_fin_reservation=reservation.date_fin_reservation,
+            date_debut_reservation=reservation.date_debut_reservation,
+            prix_jour=reservation.prix_jour,
+            info_reservation=reservation.info_reservation,
+            id_reservation=reservation.id_reservation,
+            client=client,
+            chambre=chambre,
+        )
+
+        session.add(nouvelleReservation)
+        session.commit()
+
+        return reservation
+
+
+def getReservationParNumero(no_reservation: int):
+    if no_reservation is None:
+        raise ValueError("Le numéro de reservation ne peut pas être null.")
+
+    if isinstance(no_reservation, bool) or not isinstance(no_reservation, int):
+        raise TypeError("Le numéro de reservation doit être un entier.")
+
+    if no_reservation <= 0:
+        raise ValueError("Le numéro de reservation doit être un entier positif.")
+
+    with Session(engine) as session:
+        stmt = select(Reservation).where(
+            Reservation.numero_reservation == no_reservation
         )
         result = session.execute(stmt)
 
-        for chambre in result.scalars():
-            return ChambreDTO(chambre)
+        for reservation in result.scalars():
+            return ChambreDTO(reservation)
 
-def modifierChambre(chambre: ChambreDTO):
-    # TODO : Valider que la chambre existe bien dans la BD et autres validations.
-    # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
+
+def modifierReservation(reservation: ReservationDTO):
     with Session(engine) as session:
-        stmt = select(Chambre).where(
-            Chambre.id_chambre == chambre.idChambre
+        stmt = select(Reservation).where(
+            Reservation.numero_chambre == reservation.numero_chambre
         )
-        chambreAModifier = session.execute(stmt).scalars().one()
+        reservationAModifier = session.execute(stmt).scalars().one()
 
-        chambreAModifier.disponible_reservation = chambre.disponible_reservation
-        chambreAModifier.autre_informations = chambre.autre_informations
-        chambreAModifier.numero_chambre = chambre.numero_chambre
-        chambreAModifier.fk_type_chambre = chambre.type_chambre.id_type_chambre
+        reservationAModifier.date_debut_reservation = reservation.date_debut_reservation
+        reservationAModifier.date_fin_reservation = reservation.date_fin_reservation
+        reservationAModifier.prix_jour = reservation.prix_jour
+        reservationAModifier.info_reservation = reservation.info_reservation
+        reservationAModifier.fk_id_chambre = reservation.chambre.idChambre
 
         session.execute(
-            update(Chambre).where(Chambre.id_chambre == chambre.idChambre).values(
-                disponible_reservation=chambre.disponible_reservation,
-                autre_informations=chambre.autre_informations,
-                numero_chambre=chambre.numero_chambre,
-                fk_type_chambre=chambre.type_chambre.id_type_chambre,
+            update(Reservation).where(Reservation.numero_reservation == reservation.numero_reservation).values(
+                date_debut_reservation = reservation.date_debut_reservation,
+                date_fin_reservation = reservation.date_fin_reservation,
+                prix_jour = reservation.prix_jour,
+                info_reservation = reservation.info_reservation,
+                fk_id_chambre = reservation.chambre.idChambre
             )
         )
         session.commit()
-        return chambre
+        return reservation
+
+def supprimerReservation(reservation: Reservation):
+    with Session(engine) as session:
+        stmt = select(Reservation).where(
+            Reservation.numero_chambre == reservation.numero_chambre
+        )
+        reservationASupprimer = session.execute(stmt).scalars().one()
+
+        session.delete(reservationASupprimer)
+        session.commit()
+        return reservation

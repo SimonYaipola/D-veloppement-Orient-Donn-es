@@ -14,9 +14,13 @@ class Reservation(Base):
     prix_jour: Mapped[float]
     info_reservation: Mapped[str]
     id_reservation: Mapped[str] = mapped_column(primary_key = True)
+
     # clées étrangères
     fk_id_client: Mapped[str] = mapped_column(ForeignKey("client.id_client"))
     fk_id_chambre: Mapped[str] = mapped_column(ForeignKey("chambre.id_chambre"))
+
     # Relations 1 à 1
     client: Mapped['Client'] = relationship()
     chambre: Mapped['Chambre'] = relationship()
+
+    numero_reservation: Mapped[int]
