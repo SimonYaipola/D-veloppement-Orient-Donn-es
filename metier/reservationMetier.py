@@ -46,7 +46,7 @@ def creerReservation(reservation: ReservationDTO):
         return ReservationDTO(nouvelleReservation)
 
 
-def getReservationParNumero(no_reservation: int):
+def rechercherReservation(no_reservation: int):
     if no_reservation is None:
         raise ValueError("Le numéro de reservation ne peut pas être null.")
 
@@ -60,16 +60,14 @@ def getReservationParNumero(no_reservation: int):
         stmt = select(Reservation).where(
             Reservation.numero_reservation == no_reservation
         )
-        result = session.execute(stmt)
-
-        for reservation in result.scalars():
-            return ChambreDTO(reservation)
+        reservation = session.execute(stmt).scalars().first()
+        return ReservationDTO(reservation) if reservation else None
 
 
 def modifierReservation(reservation: ReservationDTO):
     with Session(engine) as session:
         stmt = select(Reservation).where(
-            Reservation.numero_chambre == reservation.numero_chambre
+            Reservation.numero_reservation == reservation.numero_reservation
         )
         reservationAModifier = session.execute(stmt).scalars().one()
 
@@ -89,15 +87,13 @@ def modifierReservation(reservation: ReservationDTO):
             )
         )
         session.commit()
-        return reservation
+        session.refresh(reservationAModifier)
+        return ReservationDTO(reservationAModifier)
 
-def supprimerReservation(reservation: Reservation):
+def supprimerReservation(no_reservation: int):
     with Session(engine) as session:
-        stmt = select(Reservation).where(
-            Reservation.numero_chambre == reservation.numero_chambre
-        )
-        reservationASupprimer = session.execute(stmt).scalars().one()
+        reservationASupprimer = session.execute(
+            select(Reservation).where(Reservation.numero_reservation == no_reservation)).scalars().one()
 
         session.delete(reservationASupprimer)
         session.commit()
-        return reservation
