@@ -1,27 +1,32 @@
 import unittest
 from unittest.mock import patch
 from uuid import UUID
-
 from modele.table import Chambre, Typechambre
-from DTO.chambreDTO import TypechambreDTO
+from DTO.typechambreDTO import TypeChambreDTO
 from metier.chambreMetier import creerTypeChambre
 
 
 class test_creerTypeChambre(unittest.TestCase):
-    ## Test pour vérifier que la fonction creerTypeChambre lève une exception ValueError lorsque le nom du type de chambre est vide.
+    # Vérifie la création d'un type de chambre et le DTO retourné.
     @patch("metier.chambreMetier.Session")
     def test_creerTypeChambre(self, mockSession):
-        typeChambreDTO = TypechambreDTO(
+        typeChambreDTO = TypeChambreDTO(
             Typechambre(
                 nom_type="test_creation_type",
-                prix_plancher=150.0
+                prix_plafond=250.0,
+                prix_plancher=150.0,
+                description_chambre="Chambre de test"
             )
         )
         ## Appel de la fonction creerTypeChambre avec le DTO de type de chambre.
         typeChambreDTOCree = creerTypeChambre(typeChambreDTO)
         
         self.assertEqual(typeChambreDTOCree.nom_type, "test_creation_type")
+        self.assertEqual(typeChambreDTOCree.prix_plafond, 250.0)
         self.assertEqual(typeChambreDTOCree.prix_plancher, 150.0)
+        self.assertEqual(typeChambreDTOCree.description_chambre, "Chambre de test")
+        self.assertIsInstance(typeChambreDTOCree.id_type_chambre, UUID)
+
 
         session = mockSession.return_value.__enter__.return_value
         session.add.assert_called_once()
@@ -29,5 +34,9 @@ class test_creerTypeChambre(unittest.TestCase):
         ## Vérification que l'objet Typechambre ajouté à la session a les attributs corrects et que l'ID est un UUID valide.
         typeAjoute = session.add.call_args.args[0]
         self.assertEqual(typeAjoute.nom_type, "test_creation_type")
+        self.assertEqual(typeAjoute.prix_plafond, 250.0)
         self.assertEqual(typeAjoute.prix_plancher, 150.0)
+        self.assertEqual(typeAjoute.description_chambre,"Chambre de test",)
+        self.assertEqual(typeChambreDTOCree.id_type_chambre,UUID(typeAjoute.id_type_chambre),
+)
         UUID(str(typeAjoute.id_type_chambre))
