@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, Field
-from modele.table import Chambre
+from modele.chambre import Chambre
 from DTO.typechambreDTO import TypeChambreDTO
 
 

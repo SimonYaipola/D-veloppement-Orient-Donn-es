@@ -1,5 +1,4 @@
 import unittest
-import urllib
 from metier.chambreMetier import getChambreParNumero
 
 class test_getChambreParNumero(unittest.TestCase):
