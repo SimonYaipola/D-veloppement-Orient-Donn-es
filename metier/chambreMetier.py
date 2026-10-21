@@ -4,9 +4,15 @@ from uuid import uuid4
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select, update
 from DTO.chambreDTO import ChambreDTO, TypechambreDTO
-from DTO.clientDTO import ClientDTO
+from DTO.clientDTO import clientDTO
+from DTO.reservationDTO import Reservation
 from modele.table import Chambre, Typechambre
 from modele.client import Client
+from DTO.chambreDTO import ChambreDTO
+from DTO.typechambreDTO import TypeChambreDTO
+from modele.table import Chambre
+from modele.typeChambre import Typechambre
+from uuid import UUID
 import urllib
 import uuid
 
@@ -81,17 +87,83 @@ def creerTypeChambre(typeChambre: TypechambreDTO):
     # TODO : Ajouter gestion des erreurs. On va voir un exemple au prochain cours.
     with Session(engine) as session:
         nouveauTypeChambre = Typechambre(
-            id_type_chambre=str(uuid4()),
+            id_type_chambre=str(uuid4()).upper(),
             nom_type=nom,
-            prix_plancher=typeChambre.prix_plancher
+            prix_plancher=typeChambre.prix_plancher,
+            prix_plafond=typeChambre.prix_plafond,
+            description_chambre=typeChambre.description_chambre,
         )
 
         session.add(nouveauTypeChambre)
         session.commit()
+        session.refresh(nouveauTypeChambre)
 
-        return typeChambre
+        return TypeChambreDTO(nouveauTypeChambre)
+
+def modifierTypeChambre(typeChambre: TypeChambreDTO):
+    if typeChambre.id_type_chambre is None:
+        raise ValueError("L'identifiant du type de chambre est obligatoire.")
+
+    with Session(engine) as session:
+        typeAModifier = session.get(
+            Typechambre,
+            str(typeChambre.id_type_chambre).upper(),
+        )
+
+        if typeAModifier is None:
+            raise ValueError("Le type de chambre est introuvable.")
+
+        typeAModifier.nom_type = typeChambre.nom_type
+        typeAModifier.prix_plancher = typeChambre.prix_plancher
+        typeAModifier.prix_plafond = typeChambre.prix_plafond
+        typeAModifier.description_chambre = (
+            typeChambre.description_chambre
+        )
+
+        session.commit()
+        session.refresh(typeAModifier)
+
+        return TypeChambreDTO(typeAModifier)
 
 
+def rechercherTypeChambre(id_type_chambre: UUID):
+    if id_type_chambre is None:
+        raise ValueError(
+            "L'identifiant du type de chambre est obligatoire."
+        )
+
+    with Session(engine) as session:
+        type_trouve = session.get(
+            Typechambre,
+            str(id_type_chambre).upper(),
+        )
+
+        if type_trouve is None:
+            raise ValueError("Le type de chambre est introuvable.")
+
+        return TypeChambreDTO(type_trouve)
+def supprimerTypeChambre(id_type_chambre: UUID):
+    if id_type_chambre is None:
+        raise ValueError(
+            "L'identifiant du type de chambre est obligatoire."
+        )
+
+    with Session(engine) as session:
+        type_a_supprimer = session.get(
+            Typechambre,
+            str(id_type_chambre).upper(),
+        )
+
+        if type_a_supprimer is None:
+            raise ValueError("Le type de chambre est introuvable.")
+        ## Vérifier si le type de chambre est utilisé par une chambre avant de le supprimer.
+        if type_a_supprimer.chambre:
+            raise ValueError(
+                "Ce type de chambre est utilisé par une chambre."
+            )
+
+        session.delete(type_a_supprimer)
+        session.commit()
 def getChambreParNumero(no_chambre: int):
     # TODO : Ajouter des validations au besoin. Ex : no_chambre ne doit pas être null.
     
@@ -146,7 +218,7 @@ def modifierChambre(chambre: ChambreDTO):
         session.commit()
         return chambre
 
-def creerClient(client: ClientDTO):
+def creerClient(client: clientDTO):
 
     with Session(engine) as session:
         stmt = select(Client).where(
@@ -158,20 +230,19 @@ def creerClient(client: ClientDTO):
         if client.id_client is None:
             client.id_client = uuid.uuid4()
 
-        nouveauClient = client(
+        nouveauClient = Client(
             nom_client=client.nom,
             prenom_client=client.prenom,
             adresse_client=client.adresse,
             mot_de_passe_client=client.mot_de_passe,
             mobile_client=client.mobile,
             id_client=client.id_client,
-            fk_id_reservation=str(reservatiom.id_reservation).upper(),
         )
 
         session.add(nouveauClient)
         session.commit()
 
-        return client
+        return clientDTO(nouveauClient)
 
 
 def modifierClient():

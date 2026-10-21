@@ -3,7 +3,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 from modele.table import Client
 
-class ClientDTO(BaseModel):
+class clientDTO(BaseModel):
     nom_client: str = Field(min_length=1, max_length=50, strict=True)
     prenom_client: str = Field(min_length=1, max_length=50, strict=True)
     adresse_client: str = Field(min_length=1, max_length=100, strict=True)
@@ -19,5 +19,4 @@ class ClientDTO(BaseModel):
             mot_de_passe_client=client.mot_de_passe,
             mobile_client=client.mobile,
             id_client=client.id_client
-            
         )
