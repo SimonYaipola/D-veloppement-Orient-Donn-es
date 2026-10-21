@@ -84,8 +84,6 @@ with Session(engine) as session:
             )
             session.commit()
             return chambre
-<<<<<<< HEAD
-=======
 
     def supprimerChambre(id_chambre: uuid.UUID):
         if id_chambre is None:
@@ -103,4 +101,3 @@ with Session(engine) as session:
             session.delete(chambre)
             session.commit()
             
->>>>>>> 91dc9c3a09308aec0afb814baada3c0f3cdf7305

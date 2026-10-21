@@ -22,12 +22,12 @@ def creerClient(client: ClientDTO):
             client.id_client = uuid.uuid4()
 
         nouveauClient = Client(
-            nom_client=client.nom,
-            prenom_client=client.prenom,
-            adresse_client=client.adresse,
-            mot_de_passe_client=client.mot_de_passe,
-            mobile_client=client.mobile,
-            id_client=client.id_client,
+            nom=client.nom_client,
+            prenom=client.prenom_client,
+            adresse=client.adresse_client,
+            mot_de_passe=client.mot_de_passe_client,
+            mobile=client.mobile_client,
+            id_client=str(client.id_client).upper(),
         )
 
         session.add(nouveauClient)

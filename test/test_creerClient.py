@@ -1,8 +1,7 @@
 import unittest
 import urllib
-from DTO.clientDTO import ClientDTO
 from modele.client import Client
-from metier.clientMetier import creerClient
+from metier.clientMetier import creerClient, ClientDTO
 from sqlalchemy.orm import Session
 from engine.connexion import engine
 from sqlalchemy import create_engine, delete
