@@ -31,7 +31,10 @@ class ReservationDTO(BaseModel):
     client: clientDTO
     chambre: ChambreDTO
 
-    numero_reservation: int
+    numero_reservation: int 
+
+class RechercherReservationDTO(BaseModel):
+    numero_reservation: int = Field(gt=0, strict=True)
 
     def __init__(self, reservation: Reservation = None):
         super().__init__(
