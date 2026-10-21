@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select, update
-from DTO.chambreDTO import ChambreDTO, TypeChambreDTO
+from DTO.chambreDTO import ChambreDTO, TypechambreDTO
 from modele.table import Chambre, Typechambre
 import urllib
 import uuid
@@ -61,7 +61,7 @@ def creerChambre(chambre: ChambreDTO):
         return chambre
 
 
-def creerTypeChambre(typeChambre: TypeChambreDTO):
+def creerTypeChambre(typeChambre: TypechambreDTO):
     nom = typeChambre.nom_type.strip() if typeChambre.nom_type else ""
 
     if not nom:
