@@ -9,16 +9,17 @@ from datetime import date
 class ReservationCreerDTO(BaseModel):
     date_debut_reservation: date
     date_fin_reservation: date
-    prix_jour: float
+    prix_jour: float = Field(ge=0, allow_inf_nan=False)
     info_reservation: str
     id_reservation: Optional[UUID] = None
+    
     id_client: UUID
     id_chambre: UUID
 
     @model_validator(mode="after")
     def valider_ordre_date(self):
         if self.date_fin_reservation < self.date_debut_reservation:
-            raise ValueError("La date de fin doit être postérieure ou égale à la date de début.")
+            raise ValueError("La date de fin doit être postérieure ou égale à la date du début.")
         return self
 
 class ReservationDTO(BaseModel):
