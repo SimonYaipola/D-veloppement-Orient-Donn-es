@@ -14,5 +14,5 @@ class Client(Base):
     id_client: Mapped[str] = mapped_column(primary_key = True)
     mot_de_passe: Mapped[str]
     mobile: Mapped[str]
-    # Relations 1 Ã N
+    # Relations 1 à N
     reservations: Mapped[List["Reservation"]] = relationship(back_populates="client")
