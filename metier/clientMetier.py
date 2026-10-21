@@ -36,11 +36,65 @@ def creerClient(client: ClientDTO):
         return ClientDTO(nouveauClient)
 
 
-def modifierClient():
-    return
+def modifierClient(client: ClientDTO):
+    if client.id_client is None:
+        raise ValueError("L'identifiant du client est obligatoire.")
 
-def rechercherClient():
-    return
+    with Session(engine) as session:
+        clientAModifier = session.get(
+            Client,
+            str(client.id_client).upper(),
+        )
 
-def supprimerClient():
-    return
+        if clientAModifier is None:
+            raise ValueError("Le client est introuvable.")
+
+        stmt = select(Client).where(
+            Client.mobile == client.mobile_client,
+            Client.id_client != clientAModifier.id_client,
+        )
+        if session.execute(stmt).scalars().first() is not None:
+            raise ValueError("Un autre client utilise déjà ce numéro de mobile.")
+
+        clientAModifier.nom = client.nom_client
+        clientAModifier.prenom = client.prenom_client
+        clientAModifier.adresse = client.adresse_client
+        clientAModifier.mot_de_passe = client.mot_de_passe_client
+        clientAModifier.mobile = client.mobile_client
+
+        session.commit()
+        session.refresh(clientAModifier)
+
+        return ClientDTO(clientAModifier)
+
+def rechercherClient(id_client: UUID):
+    if id_client is None:
+        raise ValueError("L'identifiant du client est obligatoire.")
+
+    with Session(engine) as session:
+        clientTrouve = session.get(
+            Client,
+            str(id_client).upper(),
+        )
+
+        if clientTrouve is None:
+            raise ValueError("Le client est introuvable.")
+
+        return ClientDTO(clientTrouve)
+
+def supprimerClient(id_client: UUID):
+    if id_client is None:
+        raise ValueError("L'identifiant du client est obligatoire.")
+
+    with Session(engine) as session:
+        clientASupprimer = session.get(
+            Client,
+            str(id_client).upper(),
+        )
+        if clientASupprimer is None:
+            raise ValueError("Le client est introuvable.")
+        if clientASupprimer.reservations:
+            raise ValueError("Ce client a des réservations.")
+
+        session.delete(clientASupprimer)
+        session.commit()

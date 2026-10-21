@@ -2,7 +2,7 @@ from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, Field, model_validator
 from modele.reservation import Reservation
-from DTO.clientDTO import clientDTO
+from DTO.clientDTO import ClientDTO
 from DTO.chambreDTO import ChambreDTO
 from datetime import date
 
@@ -28,7 +28,7 @@ class ReservationDTO(BaseModel):
     info_reservation: str
     id_reservation: UUID
 
-    client: clientDTO
+    client: ClientDTO
     chambre: ChambreDTO
 
     numero_reservation: int
@@ -40,7 +40,7 @@ class ReservationDTO(BaseModel):
             prix_jour=reservation.prix_jour,
             info_reservation=reservation.info_reservation,
             id_reservation=reservation.id_reservation,
-            client=clientDTO(reservation.client),
+            client=ClientDTO(reservation.client),
             chambre=ChambreDTO(reservation.chambre),
             numero_reservation=reservation.numero_reservation
         )
