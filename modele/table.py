@@ -2,6 +2,11 @@
 
 from pyclbr import Class
 from typing import List
+from sqlalchemy import FetchedValue, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, relationship, mapped_column
+
+class Base(DeclarativeBase):
+    pass
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import  Mapped, relationship, mapped_column
 from modele.typeChambre import Typechambre
@@ -39,6 +44,7 @@ class Reservation(Base):
     client: Mapped['Client'] = relationship()
     chambre: Mapped['Chambre'] = relationship()
     # --- Fin code de GUG ---
+    numero_reservation: Mapped[int] = mapped_column(server_default=FetchedValue())
 
 # ---  Code Simon ---
 class Client(Base):
