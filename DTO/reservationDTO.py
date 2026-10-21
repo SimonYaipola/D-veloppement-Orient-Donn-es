@@ -31,7 +31,9 @@ class ReservationDTO(BaseModel):
     client: clientDTO
     chambre: ChambreDTO
 
-    numero_reservation: int
+    numero_reservation: int 
+
+
 
     def __init__(self, reservation: Reservation = None):
         super().__init__(
@@ -64,3 +66,6 @@ class ReservationDTO(BaseModel):
             raise ValueError("La date de fin doit être postérieure ou égale à la date du début.")
         
         return self
+
+class RechercherReservationDTO(BaseModel):
+    numero_reservation: int = Field(gt=0, strict=True)
