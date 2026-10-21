@@ -1,11 +1,9 @@
 import unittest
 from unittest.mock import Mock, patch
 from uuid import uuid4
-
-from modele.table import Chambre
-from modele.typeChambre import Typechambre
-from metier.chambreMetier import supprimerTypeChambre
-
+from modele.chambre import Chambre
+from modele.typeChambre import TypeChambre
+from metier.typeChambreMetier import supprimerTypeChambre
 
 class TestSupprimerTypeChambre(unittest.TestCase):
 
@@ -13,11 +11,11 @@ class TestSupprimerTypeChambre(unittest.TestCase):
         self.identifiant = uuid4()
         self.session = Mock()
     ## Test pour vérifier que la fonction supprimerTypeChambre supprime correctement un type de chambre existant.
-    @patch("metier.chambreMetier.Session")
+    @patch("metier.typeChambreMetier.Session")
     def test_suppression_reussie(self, mock_session):
         mock_session.return_value.__enter__.return_value = self.session
 
-        type_existant = Typechambre(
+        type_existant = TypeChambre(
             id_type_chambre=str(self.identifiant).upper(),
             nom_type="Double",
             prix_plancher=200.0,
@@ -30,13 +28,13 @@ class TestSupprimerTypeChambre(unittest.TestCase):
         supprimerTypeChambre(self.identifiant)
 
         self.session.get.assert_called_once_with(
-            Typechambre,
+            TypeChambre,
             str(self.identifiant).upper(),
         )
         self.session.delete.assert_called_once_with(type_existant)
         self.session.commit.assert_called_once()
     ## Test pour vérifier que la fonction supprimerTypeChambre lève une exception ValueError lorsque l'identifiant du type de chambre est absent ou lorsque le type de chambre n'est pas trouvé dans la base de données.
-    @patch("metier.chambreMetier.Session")
+    @patch("metier.typeChambreMetier.Session")
     def test_identifiant_absent(self, mock_session):
         with self.assertRaisesRegex(
             ValueError,
@@ -46,7 +44,7 @@ class TestSupprimerTypeChambre(unittest.TestCase):
 
         mock_session.assert_not_called()
     ## Test pour vérifier que la fonction supprimerTypeChambre lève une exception ValueError lorsque le type de chambre à supprimer n'existe pas dans la base de données.
-    @patch("metier.chambreMetier.Session")
+    @patch("metier.typeChambreMetier.Session")
     def test_type_introuvable(self, mock_session):
         mock_session.return_value.__enter__.return_value = self.session
         self.session.get.return_value = None
@@ -60,11 +58,11 @@ class TestSupprimerTypeChambre(unittest.TestCase):
         self.session.delete.assert_not_called()
         self.session.commit.assert_not_called()
     ## Test pour vérifier que la fonction supprimerTypeChambre lève une exception ValueError lorsque le type de chambre à supprimer est utilisé par une chambre existante.
-    @patch("metier.chambreMetier.Session")
+    @patch("metier.typeChambreMetier.Session")
     def test_type_utilise_par_une_chambre(self, mock_session):
         mock_session.return_value.__enter__.return_value = self.session
 
-        self.session.get.return_value = Typechambre(
+        self.session.get.return_value = TypeChambre(
             id_type_chambre=str(self.identifiant).upper(),
             nom_type="Double",
             prix_plancher=200.0,

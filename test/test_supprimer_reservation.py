@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock, patch
-from modele.table import Reservation
+from modele.reservation import Reservation
 from metier.reservationMetier import supprimerReservation
 
 class test_supprimerReservation(unittest.TestCase):

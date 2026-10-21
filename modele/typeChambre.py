@@ -3,12 +3,12 @@ from sqlalchemy.orm import Mapped, relationship, mapped_column
 from modele.base import Base
 
 if TYPE_CHECKING:
-    from modele.table import Chambre
+    from modele.chambre import Chambre
 
 
 
 
-class Typechambre(Base):
+class TypeChambre(Base):
     __tablename__ = "type_chambre"
 
     nom_type: Mapped[str]

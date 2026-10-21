@@ -1,17 +1,16 @@
 import unittest
 from unittest.mock import patch
 from uuid import UUID
-from modele.table import Chambre, Typechambre
+from modele.typeChambre import TypeChambre
 from DTO.typechambreDTO import TypeChambreDTO
-from metier.chambreMetier import creerTypeChambre
-
+from metier.typeChambreMetier import creerTypeChambre
 
 class test_creerTypeChambre(unittest.TestCase):
     # Vérifie la création d'un type de chambre et le DTO retourné.
-    @patch("metier.chambreMetier.Session")
+    @patch("metier.typeChambreMetier.Session")
     def test_creerTypeChambre(self, mockSession):
         typeChambreDTO = TypeChambreDTO(
-            Typechambre(
+            TypeChambre(
                 nom_type="test_creation_type",
                 prix_plafond=250.0,
                 prix_plancher=150.0,

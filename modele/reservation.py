@@ -1,11 +1,12 @@
 from typing import List, TYPE_CHECKING
 from sqlalchemy.orm import Mapped, relationship, mapped_column
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, FetchedValue
 from modele.base import Base
 
+
 if TYPE_CHECKING:
-    from modele.table import Chambre
-    from modele.table import Client
+    from modele.chambre import Chambre
+    from modele.client import Client
 
 class Reservation(Base):
     __tablename__ = "reservation"
@@ -23,4 +24,4 @@ class Reservation(Base):
     client: Mapped['Client'] = relationship()
     chambre: Mapped['Chambre'] = relationship()
 
-    numero_reservation: Mapped[int]
+    numero_reservation: Mapped[int] =  mapped_column(server_default=FetchedValue())
