@@ -2,7 +2,7 @@ from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, Field, field_validator, model_validator
 from modele.table import Reservation
-from DTO.clientDTO import clientDTO
+from DTO.clientDTO import ClientDTO
 from DTO.chambreDTO import ChambreDTO
 from datetime import date
 

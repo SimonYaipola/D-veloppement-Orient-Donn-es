@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select, update
 from DTO.reservationDTO import ReservationDTO, ReservationCreerDTO
 from DTO.chambreDTO import ChambreDTO
-from DTO.clientDTO import clientDTO
+from DTO.clientDTO import ClientDTO
 from modele.table import Chambre, Reservation, Client
 import urllib
 import uuid

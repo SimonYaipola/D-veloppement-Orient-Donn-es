@@ -1,0 +1,4 @@
+SERVER = "158.69.208.232,1433"
+DATABASE = "Hotels"
+USERNAME = "sa"
+PASSWORD = "Automne,2026"

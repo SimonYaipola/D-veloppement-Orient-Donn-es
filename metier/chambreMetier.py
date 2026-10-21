@@ -3,9 +3,9 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select, update
-from DTO.chambreDTO import ChambreDTO, TypechambreDTO
-from DTO.clientDTO import clientDTO
-from DTO.reservationDTO import Reservation
+from DTO.chambreDTO import ChambreDTO
+from DTO.clientDTO import ClientDTO
+from DTO.reservationDTO import ReservationDTO
 from modele.table import Chambre, Typechambre
 from modele.client import Client
 from DTO.chambreDTO import ChambreDTO
@@ -74,7 +74,7 @@ def creerChambre(chambre: ChambreDTO):
         return chambre
 
 
-def creerTypeChambre(typeChambre: TypechambreDTO):
+def creerTypeChambre(typeChambre: TypeChambreDTO):
     nom = typeChambre.nom_type.strip() if typeChambre.nom_type else ""
 
     if not nom:
@@ -218,38 +218,3 @@ def modifierChambre(chambre: ChambreDTO):
         session.commit()
         return chambre
 
-def creerClient(client: clientDTO):
-
-    with Session(engine) as session:
-        stmt = select(Client).where(
-            Client.mobile == Client.mobile
-        )
-        if session.execute(stmt).scalars().first() is not None:
-            raise ValueError("Un client avec ce numéro de mobile existe déjà.")
-        
-        if client.id_client is None:
-            client.id_client = uuid.uuid4()
-
-        nouveauClient = Client(
-            nom_client=client.nom,
-            prenom_client=client.prenom,
-            adresse_client=client.adresse,
-            mot_de_passe_client=client.mot_de_passe,
-            mobile_client=client.mobile,
-            id_client=client.id_client,
-        )
-
-        session.add(nouveauClient)
-        session.commit()
-
-        return clientDTO(nouveauClient)
-
-
-def modifierClient():
-    return
-
-def rechercherClient():
-    return
-
-def supprimerClient():
-    return
