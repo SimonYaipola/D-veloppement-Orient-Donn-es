@@ -84,3 +84,23 @@ with Session(engine) as session:
             )
             session.commit()
             return chambre
+<<<<<<< HEAD
+=======
+
+    def supprimerChambre(id_chambre: uuid.UUID):
+        if id_chambre is None:
+            raise ValueError("L'ID de la chambre ne peut pas être null.")
+
+        with Session(engine) as session:
+            chambre = session.get(Chambre, str(id_chambre).upper(),
+            )
+
+            if chambre is None:
+                raise ValueError("La chambre est introuvable.")
+
+            if chambre.reservations:
+                raise ValueError("La chambre ne peut pas être supprimée, car elle est associée à une ou plusieurs réservations.")
+            session.delete(chambre)
+            session.commit()
+            
+>>>>>>> 91dc9c3a09308aec0afb814baada3c0f3cdf7305

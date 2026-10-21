@@ -2,7 +2,7 @@ import uuid
 
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
-from DTO.reservationDTO import ReservationDTO
+from DTO.reservationDTO import ReservationDTO, RechercherReservationDTO
 from engine.connexion import engine
 from modele.chambre import Chambre
 from modele.client import Client
@@ -33,19 +33,11 @@ with Session(engine) as session:
             return ReservationDTO(nouvelleReservation)
 
 
-    def rechercherReservation(no_reservation: int):
-        if no_reservation is None:
-            raise ValueError("Le numéro de reservation ne peut pas être null.")
-
-        if isinstance(no_reservation, bool) or not isinstance(no_reservation, int):
-            raise TypeError("Le numéro de reservation doit être un entier.")
-
-        if no_reservation <= 0:
-            raise ValueError("Le numéro de reservation doit être un entier positif.")
+    def rechercherReservation(recherche: RechercherReservationDTO):
 
         with Session(engine) as session:
             stmt = select(Reservation).where(
-                Reservation.numero_reservation == no_reservation
+                Reservation.numero_reservation == recherche.numero_reservation
             )
             reservation = session.execute(stmt).scalars().first()
             return ReservationDTO(reservation) if reservation else None
