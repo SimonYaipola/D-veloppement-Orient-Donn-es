@@ -63,3 +63,46 @@ with Session(engine) as session:
             self.assertEqual(ajoutee.chambre, chambre)
             self.assertEqual(resultat.numero_reservation, 2)
             UUID(str(ajoutee.id_reservation))
+            
+        @patch("metier.reservationMetier.Session")
+        def test_creerReservationChambreManquante(self, mockSession):
+            session = mockSession.return_value.__enter__.return_value
+            
+            client = Client(id_client=ID_CLIENT, prenom="Test", nom="Test", adresse="Test", mot_de_passe="Test", mobile="5145550000")
+            session.get.side_effect = [None, client]
+
+            DTO = ReservationCreerDTO(
+                            date_debut_reservation=date(2026, 9, 20),
+                            date_fin_reservation=date(2026, 9, 25),
+                            prix_jour=200.00,
+                            info_reservation="Mock test de création d'une réservation",
+                            id_client=UUID(ID_CLIENT),
+                            id_chambre=UUID(ID_CHAMBRE),
+                        )
+
+            with self.assertRaises(ValueError):
+                creerReservation(DTO)
+
+            session.commit.assert_not_called()
+
+        @patch("metier.reservationMetier.Session")
+        def test_creerReservationClientManquant(self, mockSession):
+            session = mockSession.return_value.__enter__.return_value
+            
+            chambre = Chambre(id_chambre=ID_CHAMBRE, numero_chambre=1, disponible_reservation=True, autre_informations="Test", fk_type_chambre="00000000-0000-0000-0000-000000000000")
+            session.get.side_effect = [chambre, None]
+
+            DTO = ReservationCreerDTO(
+                            date_debut_reservation=date(2026, 9, 20),
+                            date_fin_reservation=date(2026, 9, 25),
+                            prix_jour=200.00,
+                            info_reservation="Mock test de création d'une réservation",
+                            id_client=UUID(ID_CLIENT),
+                            id_chambre=UUID(ID_CHAMBRE),
+                        )
+
+            with self.assertRaises(ValueError):
+                creerReservation(DTO)
+
+            session.commit.assert_not_called()
+        

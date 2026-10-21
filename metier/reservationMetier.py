@@ -11,6 +11,9 @@ from modele.reservation import Reservation
 with Session(engine) as session:
 
     def creerReservation(reservation: ReservationDTO):
+        if reservation is None:
+            raise ValueError("Le numéro de chambre ne peut pas être null.")
+        
         with Session(engine) as session:
             chambre = session.get(Chambre, str(reservation.id_chambre).upper())
             client = session.get(Client, str(reservation.id_client).upper())
@@ -33,11 +36,20 @@ with Session(engine) as session:
             return ReservationDTO(nouvelleReservation)
 
 
-    def rechercherReservation(recherche: RechercherReservationDTO):
+    def rechercherReservation(no_reservation: int):
+
+        if no_reservation is None:
+            raise ValueError("Le numéro de chambre ne peut pas être null.")
+
+        if isinstance(no_reservation, bool) or not isinstance(no_reservation, int):
+            raise TypeError("Le numéro de chambre doit être un entier.")
+
+        if no_reservation <= 0:
+            raise ValueError("Le numéro de chambre doit être un entier positif.")
 
         with Session(engine) as session:
             stmt = select(Reservation).where(
-                Reservation.numero_reservation == recherche.numero_reservation
+                Reservation.numero_reservation == no_reservation
             )
             reservation = session.execute(stmt).scalars().first()
             return ReservationDTO(reservation) if reservation else None
