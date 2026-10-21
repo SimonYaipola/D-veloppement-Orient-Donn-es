@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, Field
-from modele.table import Client
+from modele.client import Client
 
 class ClientDTO(BaseModel):
     nom_client: str = Field(min_length=1, max_length=50, strict=True)

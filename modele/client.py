@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, relationship, mapped_column
 from modele.base import Base
 
 if TYPE_CHECKING:
-    from modele.table import Reservation
+    from modele.reservation import Reservation
 
 class Client(Base):
     __tablename__ = "client"

@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, Field, field_validator, model_validator
-from modele.table import Typechambre
+from modele.typeChambre import TypeChambre
 
 # Data Transfert Object : pydantic BaseModel pour intégration facile avec FastAPI.
 # Facilite aussi grandement la sérialization et la validation des données contenues dans les DTOs.
@@ -13,7 +13,7 @@ class TypeChambreDTO(BaseModel):
     prix_plancher: float = Field(ge=0, allow_inf_nan=False)
     description_chambre: Optional[str] = None
 
-    def __init__(self, typeChambre: Typechambre = None):
+    def __init__(self, typeChambre: TypeChambre = None):
         super().__init__(
             id_type_chambre=typeChambre.id_type_chambre,
             nom_type=typeChambre.nom_type,

@@ -1,11 +1,21 @@
 import unittest
+<<<<<<< HEAD
 import urllib
 from modele.table import Chambre, Typechambre
 from metier.chambreMetier import creerChambre, ChambreDTO
 from sqlalchemy.orm import Session
 from engine.connexion import engine
 from sqlalchemy import create_engine, delete
+=======
+from modele.chambre import Chambre
+from modele.typeChambre import TypeChambre
+from metier.chambreMetier import creerChambre, ChambreDTO
+from sqlalchemy.orm import Session
+from sqlalchemy import delete
+>>>>>>> ca3468ed7af129485f1eebccaae4d7402e8bd921
 from uuid import UUID
+from sqlalchemy.orm import Session
+from engine.connexion import engine
 
 with Session(engine) as session:
 
@@ -18,7 +28,11 @@ with Session(engine) as session:
                     autre_informations='lavabo inclut',
                     id_chambre='1776E513-BB05-41D9-B22E-0073772A006A',
                     type_chambre=
+<<<<<<< HEAD
                         Typechambre(
+=======
+                        TypeChambre(
+>>>>>>> ca3468ed7af129485f1eebccaae4d7402e8bd921
                             nom_type='triple',
                             prix_plancher=210,
                             prix_plafond=320,
