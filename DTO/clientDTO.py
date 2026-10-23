@@ -1,6 +1,6 @@
 from typing import Optional
 from uuid import UUID
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from modele.client import Client
 
 class ClientDTO(BaseModel):
@@ -20,3 +20,10 @@ class ClientDTO(BaseModel):
             mobile_client=client.mobile,
             id_client=client.id_client
         )
+    #Retire les espaces avant la vérification de la longueur des champs
+    @field_validator("nom_client", "prenom_client", "adresse_client", mode="before")
+    @classmethod
+    def nettoyer_espaces(cls, valeur):
+        if isinstance(valeur, str):
+            return valeur.strip()
+        return valeur
