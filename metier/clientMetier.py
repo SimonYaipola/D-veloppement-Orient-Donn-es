@@ -71,6 +71,14 @@ def rechercherClient(id_client: UUID):
     if id_client is None:
         raise ValueError("L'identifiant du client est obligatoire.")
 
+    if not isinstance(id_client, (UUID, str)):
+        raise TypeError("L'identifiant du client doit être un UUID.")
+
+    try:
+        id_client = UUID(str(id_client))
+    except ValueError:
+        raise ValueError("L'identifiant du client n'est pas un UUID valide.")
+
     with Session(engine) as session:
         clientTrouve = session.get(
             Client,
