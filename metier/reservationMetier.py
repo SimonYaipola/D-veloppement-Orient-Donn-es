@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 
 from sqlalchemy import select, update
@@ -36,21 +37,32 @@ with Session(engine) as session:
             return ReservationDTO(nouvelleReservation)
 
 
-    def rechercherReservation(no_reservation: int):
+    def rechercherReservation(no_reservation: Optional[int], no_chambre: Optional[int]):
 
-        if no_reservation is None:
-            raise ValueError("Le numéro de chambre ne peut pas être null.")
+        if no_reservation is None or no_chambre is None:
+            raise ValueError("Le numéro donné ne peut pas être null.")
 
         if isinstance(no_reservation, bool) or not isinstance(no_reservation, int):
-            raise TypeError("Le numéro de chambre doit être un entier.")
+            raise TypeError("Le numéro donné doit être un entier.")
 
-        if no_reservation <= 0:
-            raise ValueError("Le numéro de chambre doit être un entier positif.")
+        if isinstance(no_chambre, bool) or not isinstance(no_chambre, int):
+            raise TypeError("Le numéro donné doit être un entier.")
+
+        if no_reservation <= 0 or no_chambre <= 0:
+            raise ValueError("Le numéro donné doit être un entier positif.")
 
         with Session(engine) as session:
-            stmt = select(Reservation).where(
-                Reservation.numero_reservation == no_reservation
-            )
+            if no_reservation:
+                stmt = select(Reservation).where(
+                    Reservation.numero_reservation == no_reservation
+                )
+            else:
+                if no_chambre:
+                    stmt = select(Reservation.fk_id_chambre, Chambre.id_chambre, Chambre.numero_chambre).join(Chambre, Chambre.id_chambre == Reservation.fk_id_chambre).where(
+                        Chambre.numero_chambre == no_chambre
+                    )
+
+            
             reservation = session.execute(stmt).scalars().first()
             return ReservationDTO(reservation) if reservation else None
 
