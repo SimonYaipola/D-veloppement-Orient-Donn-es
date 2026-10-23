@@ -6,6 +6,7 @@ from DTO.clientDTO import ClientDTO
 from DTO.chambreDTO import ChambreDTO
 from datetime import date
 
+# Méthode qui créer une réservation (utilisant des UUID pour les foreign key)
 class ReservationCreerDTO(BaseModel):
     date_debut_reservation: date
     date_fin_reservation: date
@@ -22,6 +23,7 @@ class ReservationCreerDTO(BaseModel):
             raise ValueError("La date de fin doit être postérieure ou égale à la date du début.")
         return self
 
+# Méthode qui lis une réservation (utilisant des objets de client et de chambre pour les foreign key)
 class ReservationDTO(BaseModel):
     date_debut_reservation: date
     date_fin_reservation: date
@@ -67,6 +69,3 @@ class ReservationDTO(BaseModel):
             raise ValueError("La date de fin doit être postérieure ou égale à la date du début.")
         
         return self
-
-class RechercherReservationDTO(BaseModel):
-    numero_reservation: int = Field(gt=0, strict=True)
