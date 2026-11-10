@@ -29,6 +29,7 @@ with Session(engine) as session:
                 info_reservation=reservation.info_reservation,
                 client=client,
                 chambre=chambre,
+                numero_reservation=reservation.numero_reservation
             )
 
             session.add(nouvelleReservation)
@@ -37,18 +38,18 @@ with Session(engine) as session:
             return ReservationDTO(nouvelleReservation)
 
 
-    def rechercherReservation(no_reservation: Optional[int], no_chambre: Optional[int]):
+    def rechercherReservation(no_reservation: Optional[int] = None, no_chambre: Optional[int] = None):
 
-        if no_reservation is None or no_chambre is None:
+        if no_reservation is None and no_chambre is None:
             raise ValueError("Le numéro donné ne peut pas être null.")
 
-        if isinstance(no_reservation, bool) or not isinstance(no_reservation, int):
+        if isinstance(no_reservation, bool) and not isinstance(no_reservation, int):
             raise TypeError("Le numéro donné doit être un entier.")
 
-        if isinstance(no_chambre, bool) or not isinstance(no_chambre, int):
+        if isinstance(no_chambre, bool) and not isinstance(no_chambre, int):
             raise TypeError("Le numéro donné doit être un entier.")
 
-        if no_reservation <= 0 or no_chambre <= 0:
+        if no_reservation <= 0 and no_chambre <= 0:
             raise ValueError("Le numéro donné doit être un entier positif.")
 
         with Session(engine) as session:
@@ -67,7 +68,7 @@ with Session(engine) as session:
             return ReservationDTO(reservation) if reservation else None
 
 
-    def modifierReservation(reservation: ReservationDTO):
+    def modifierReservation(reservation: ReservationDTO, id_chambre: Optional[str] = None):
         with Session(engine) as session:
             stmt = select(Reservation).where(
                 Reservation.numero_reservation == reservation.numero_reservation
@@ -97,6 +98,18 @@ with Session(engine) as session:
         with Session(engine) as session:
             reservationASupprimer = session.execute(
                 select(Reservation).where(Reservation.numero_reservation == no_reservation)).scalars().one()
+
+            reservationASupprimer.fk_id_client = None
+            reservationASupprimer.fk_id_chambre = None
+
+            session.execute(
+                update(Reservation).where(Reservation.numero_reservation == no_reservation).values(
+                    fk_id_client = reservationASupprimer.fk_id_client,
+                    fk_id_chambre = reservationASupprimer.fk_id_chambre,
+                )
+            )
+            session.commit()
+            session.refresh(reservationASupprimer)
 
             session.delete(reservationASupprimer)
             session.commit()
