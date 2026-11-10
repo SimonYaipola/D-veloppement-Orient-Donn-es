@@ -21,7 +21,7 @@ from metier.typeChambreMetier import (
     supprimerTypeChambre,
 )
 from metier.reservationMetier import ReservationDTO
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
 
