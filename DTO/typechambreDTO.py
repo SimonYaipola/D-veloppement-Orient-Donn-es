@@ -13,14 +13,17 @@ class TypeChambreDTO(BaseModel):
     prix_plancher: float = Field(ge=0, allow_inf_nan=False)
     description_chambre: Optional[str] = None
 
-    def __init__(self, typeChambre: TypeChambre = None):
-        super().__init__(
-            id_type_chambre=typeChambre.id_type_chambre,
-            nom_type=typeChambre.nom_type,
-            prix_plafond=typeChambre.prix_plafond,
-            prix_plancher=typeChambre.prix_plancher,
-            description_chambre=typeChambre.description_chambre
-        )
+    def __init__(self, typeChambre: TypeChambre = None, **data):
+        if typeChambre is not None:
+            data = {
+                "id_type_chambre": typeChambre.id_type_chambre,
+                "nom_type": typeChambre.nom_type,
+                "prix_plafond": typeChambre.prix_plafond,
+                "prix_plancher": typeChambre.prix_plancher,
+                "description_chambre": typeChambre.description_chambre
+            }
+        super().__init__(**data)
+
     #Retire les espace avant la vérification de la longueur du nom_type 
     @field_validator("nom_type", mode="before")
     @classmethod
