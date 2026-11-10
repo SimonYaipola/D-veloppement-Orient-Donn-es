@@ -13,11 +13,14 @@ class ChambreDTO(BaseModel):
     autre_informations: Optional[str] = None
     type_chambre: TypeChambreDTO
 
-    def __init__(self, chambre: Chambre = None):
-        super().__init__(
-            idChambre=chambre.id_chambre,
-            numero_chambre=chambre.numero_chambre,
-            disponible_reservation=chambre.disponible_reservation,
-            autre_informations=chambre.autre_informations,
-            type_chambre=TypeChambreDTO(chambre.type_chambre)
-        )
+    def __init__(self, chambre: Chambre = None, **data):
+        if chambre is not None:
+            data = {
+                "idChambre": chambre.id_chambre,
+                "numero_chambre": chambre.numero_chambre,
+                "disponible_reservation": chambre.disponible_reservation,
+                "autre_informations": chambre.autre_informations,
+                "type_chambre": TypeChambreDTO(chambre.type_chambre) if chambre.type_chambre else None
+            }
+        super().__init__(**data)
+   
