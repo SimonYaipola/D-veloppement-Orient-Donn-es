@@ -292,16 +292,6 @@ def read_item(current_user: Annotated[User, Depends(get_current_user)], no_reser
 
     # ---------- Client ----------
 
-# Empêche les données invalide du dto
-def leClientDTO(**champs) -> ClientDTO:
-    try:
-        return ClientDTO(**champs)
-    except ValidationError as e:
-        raise HTTPException(
-            status_code=422,
-            detail=[f"{err['loc'][0]} : {err['msg']}" for err in e.errors()],
-        )
-
 @app.post("/creerClient", status_code=201)
 def creer_client(
     current_user: Annotated[User, Depends(get_current_user)],
@@ -312,7 +302,7 @@ def creer_client(
     mobile_client: Annotated[str, Form()],
     ):
     try:
-        client = leClientDTO(
+        client = ClientDTO(
             nom_client=nom_client,
             prenom_client=prenom_client,
             adresse_client=adresse_client,
@@ -334,7 +324,7 @@ def modifier_client(
     mobile_client: Annotated[str, Form()],
     ):
     try:
-        client = leClientDTO(
+        client = ClientDTO(
         id_client=id_client,
         nom_client=nom_client,
         prenom_client=prenom_client,
