@@ -11,15 +11,18 @@ class ClientDTO(BaseModel):
     mobile_client: str = Field(min_length=1, max_length=15, strict=True)
     id_client: Optional[UUID] = None
 
-    def __init__(self, client: Client = None):
-        super().__init__(
-            nom_client=client.nom,
-            prenom_client=client.prenom,
-            adresse_client=client.adresse,
-            mot_de_passe_client=client.mot_de_passe,
-            mobile_client=client.mobile,
-            id_client=client.id_client
-        )
+    def __init__(self, client: Client = None, **data):
+        if client is not None:
+            super().__init__(
+                nom_client=client.nom,
+                prenom_client=client.prenom,
+                adresse_client=client.adresse,
+                mot_de_passe_client=client.mot_de_passe,
+                mobile_client=client.mobile,
+                id_client=client.id_client
+            )
+        else:
+            super().__init__(**data)
     #Retire les espaces avant la vérification de la longueur des champs
     @field_validator("nom_client", "prenom_client", "adresse_client", mode="before")
     @classmethod
