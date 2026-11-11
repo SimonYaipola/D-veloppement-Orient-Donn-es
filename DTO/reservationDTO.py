@@ -16,6 +16,8 @@ class ReservationCreerDTO(BaseModel):
     id_client: UUID
     id_chambre: UUID
 
+    numero_reservation: int 
+
     @model_validator(mode="after")
     def valider_ordre_date(self):
         if self.date_fin_reservation < self.date_debut_reservation:
