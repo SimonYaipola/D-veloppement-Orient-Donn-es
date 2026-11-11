@@ -45,6 +45,7 @@ with Session(engine) as session:
                 info_reservation="Mock test de création d'une réservation",
                 id_client=UUID(ID_CLIENT),
                 id_chambre=UUID(ID_CHAMBRE),
+                numero_reservation=3000
             )
 
             # création de la reservation mock
@@ -78,6 +79,7 @@ with Session(engine) as session:
                             info_reservation="Mock test de création d'une réservation",
                             id_client=UUID(ID_CLIENT),
                             id_chambre=UUID(ID_CHAMBRE),
+                            numero_reservation=3000
                         )
 
             with self.assertRaises(ValueError):
@@ -99,6 +101,7 @@ with Session(engine) as session:
                             info_reservation="Mock test de création d'une réservation",
                             id_client=UUID(ID_CLIENT),
                             id_chambre=UUID(ID_CHAMBRE),
+                            numero_reservation=3000
                         )
 
             with self.assertRaises(ValueError):
