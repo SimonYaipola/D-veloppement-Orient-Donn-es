@@ -132,3 +132,10 @@ settings.local.py
 # =========================
 
 uploads/
+
+# =========================
+# React
+# =========================
+
+frontend/node_modules
+frontend/package-lock.json
