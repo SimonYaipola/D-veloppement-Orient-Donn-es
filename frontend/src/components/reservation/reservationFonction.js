@@ -6,34 +6,41 @@ function Reservation({ reservation }) {
 
     return (
         <>
-            <h4>{reservation.du} au {reservation.au}</h4> 
-            <p>{reservation.prix} par jour</p>
+            <h4>
+                Réservation numéro : {reservation.numero_reservation} :{" "} <br />
+                {reservation.date_debut_reservation} au {reservation.date_fin_reservation}</h4>
+            <p>{reservation.prix_jour} $ par jour</p>
+            <p>{reservation.info_reservation}</p>
             <div>
                 <button
                     className="button-info"
-                    onclick={() => setIsClientVisible(!isClientVisible)}
+                    onClick={() => setIsClientVisible(!isClientVisible)}
                 >
                     {reservation.client.prenom} {reservation.client.nom}
                 </button>
-                    <p hidden={isClientVisible}>
-                        {reservation.client.adresse}
-                        <br />
-                        {reservation.client.mobile}
-                    </p>
-
+                <p hidden={!isClientVisible}>
+                    {reservation.client.adresse}
                     <br />
-                    <button
-                        className="button-info"
-                        onclick={() => setIsChambreVisible(!isChambreVisible)}
-                    >
-                        Chambre {reservation.chambre.numero}
-                    </button>
-                        <p hidden={isChambreVisible}>
-                            <img src={reservation.chambre.logo} alt={"Chambre ${reservation.chambre.numero}"} />
-                        </p> 
+                    {reservation.client.mobile}
+                </p>
+
+                <br />
+
+                <button
+                    className="button-info"
+                    onClick={() => setIsChambreVisible(!isChambreVisible)}
+                >
+                    Chambre {reservation.chambre.numero}
+                </button>
+                <p hidden={!isChambreVisible}>
+                    <img
+                        src={reservation.chambre.logo}
+                        alt={`Chambre ${reservation.chambre.numero}`}
+                    />
+                </p>
             </div>
         </>
     );
 }
 
-    export default Reservation;
+export default Reservation;

@@ -1,48 +1,24 @@
-import Reservation from './components/reservation/reservationClasse'; 
+import RechercheReservation from "./components/reservation/rechercherReservation";
+import CreerReservation from "./components/reservation/creerReservation.js";
+import SupprimerReservation from "./components/reservation/supprimerReservation.js";
+import ModifierReservation from "./components/reservation/modifierReservation.js";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Menu from "./components/menu/menu.js";
 import logoChambre from "./components/logo/logoChambre.jpg";
 
 function App() {
-  return (
-    <>
-      <Reservation reservation={reservation1} /> 
-      <Reservation reservation={reservation2} />
-    </>
-  );
-}
-
-  
-/* json mock en attendant que l'on bind le front-end avec le back-end */ 
-const reservation1 = {
-  du: "15 décembre 2024",
-  au: "24 décembre 2024",
-  prix: "129.99",
-  client: {
-    prenom: "Jean",
-    nom: "Saisrien",
-    adresse: "1234 rue Des Tulipes, Gaspé",
-    mobile: "418-123-4567"
-  },
-  chambre: {
-    numero: "12",
-    logo: logoChambre
-  }
-}
-
-const reservation2 = {
-  du: "25 décembre 2024",
-  au: "31 décembre 2024",
-  prix: "159.99",
-  client: {
-  
-    prenom: "Paul",
-    nom: "Therrien",
-    adresse: "6789 rue Des Érables, Matane",
-    mobile: "418-456-1234"
-  },
-  chambre: {
-    numero: 20,
-    logo: logoChambre
-  }
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Menu />}>
+                    <Route index element={<RechercheReservation />} />
+                    <Route path="creer" element={<CreerReservation />} />
+                    <Route path="supprimer" element={<SupprimerReservation />} />
+                    <Route path="modifier" element={<ModifierReservation />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
